@@ -15,8 +15,8 @@ function newAccount() {
         if (username.length) {
             Gun.SEA.pair().then(async k => {
                 await login(k);
-                await gun.user().get('profile').get('username').put(username);
-                await createVibeLink();
+                gun.user().get('profile').get('username').put(username);
+                createVibeLink();
             });
         }
     });    
@@ -29,7 +29,7 @@ async function createVibeLink() {
 
 
 //Login using a key
-async function login(k) {
+function login(k) {
     key = k;
     localStorage.setItem('keyPair', JSON.stringify(k));
     iris.Channel.initUser(gun, key);
