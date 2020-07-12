@@ -13,7 +13,7 @@ export default {
             }
         }  
     },
-    getUserVibeLink: (pub) => {
+    getUserFriendLink: (pub) => {
         return "http://localhost:8080?chatWith="+ pub;
       },
 }

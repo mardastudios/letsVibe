@@ -1,6 +1,6 @@
 import {gun} from './main.js';
 import helpers from './helpers.js';
-import {addVibe, newVibe } from './vibes.js';
+import {addFriend, newFriend } from './friend.js';
 
 var key;
 var username;
@@ -16,14 +16,14 @@ function newAccount() {
             Gun.SEA.pair().then(async k => {
                 await login(k);
                 gun.user().get('profile').get('username').put(username);
-                createVibeLink();
+                createFriendLink();
             });
         }
     });    
 }
 
 //Creating channel URL to be shared
-async function createVibeLink() {
+async function createFriendLink() {
     latestChatLink = await iris.Channel.createChatLink(gun, key, 'http://localhost:8080');
 }
 
@@ -35,16 +35,18 @@ function login(k) {
     iris.Channel.initUser(gun, key);
     gun.user().get('profile').get('username').on(async name => {        
         username = await name;
+        $('.thisUser').text(username);
+        
     });
-
-    iris.Channel.getChannels(gun, key, addVibe);
+    
+    iris.Channel.getChannels(gun, key, addFriend);
     var chatId = helpers.getUrlParameter('chatWith') || helpers.getUrlParameter('channelId');
     var inviter = helpers.getUrlParameter('inviter');
     function go() {
         if (inviter !== key.pub) {
-            newVibe(chatId, window.location.href);
+            newFriend(chatId, window.location.href);
         }
-        window.history.pushState({}, "Vibe", "/"+window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]); // remove param
+        window.history.pushState({}, "Friend", "/"+window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]); // remove param
     }
     if (chatId) {
         if (inviter) {
@@ -58,7 +60,7 @@ function login(k) {
 //Helper functions
 function getKey() { return key;}
 function getUsername() {return username;}
-function getVibeLink() {return latestChatLink || helpers.getUserVibeLink(key.pub);}
+function getFriendLink() {return latestChatLink || helpers.getUserFriendLink(key.pub);}
 
 
 function init() {
@@ -79,7 +81,7 @@ function init() {
         try {
             var k = JSON.parse(val);
             login(k);
-            createVibeLink();
+            createFriendLink();
             console.log('Succussfuly logged in');
             $(event.target).val('');
         } catch (e) {
@@ -92,11 +94,12 @@ function init() {
         localStorage.removeItem('keyPair');
         location.reload();
     });
+    
     $('#debug-print').click(() => {
         console.log("Username: ", getUsername());
         console.log("Key: ", JSON.stringify(getKey()));
-        console.log("Vibe Link: ", getVibeLink());
+        console.log("Friend Link: ", getFriendLink());
     });
 }
 
-export default {init, getKey, getUsername, getVibeLink};
+export default {init, getKey, getUsername, getFriendLink};
