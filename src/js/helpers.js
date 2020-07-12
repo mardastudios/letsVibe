@@ -14,6 +14,6 @@ export default {
         }  
     },
     getUserVibeLink: (pub) => {
-        return "http://localhost:8080?vibeWith="+ pub;
+        return "http://localhost:8080?chatWith="+ pub;
       },
 }

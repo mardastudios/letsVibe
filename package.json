@@ -1,17 +1,15 @@
 {
   "name": "vibe",
   "version": "1.0.0",
-  "main": "index.js",
   "description": "",
   "dependencies": {
-    "express": "^4.17.1",
-    "gun": "^0.2019.930"
+    "eslint": "^7.4.0",
+    "http-server": "^0.12.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "scripts": {
-    "start": "npm run server",
-    "server": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "echo 'VIBE: http://localhost:8080'; http-server src"
   },
   "keywords": []
 }

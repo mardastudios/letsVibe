@@ -1,6 +1,6 @@
 import {gun} from './main.js';
 import helpers from './helpers.js';
-import {addVibe } from './vibes.js';
+import {addVibe, newVibe } from './vibes.js';
 
 var key;
 var username;
@@ -38,6 +38,21 @@ async function login(k) {
     });
 
     iris.Channel.getChannels(gun, key, addVibe);
+    var chatId = helpers.getUrlParameter('chatWith') || helpers.getUrlParameter('channelId');
+    var inviter = helpers.getUrlParameter('inviter');
+    function go() {
+        if (inviter !== key.pub) {
+            newVibe(chatId, window.location.href);
+        }
+        window.history.pushState({}, "Vibe", "/"+window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]); // remove param
+    }
+    if (chatId) {
+        if (inviter) {
+            setTimeout(go, 2000); // wait a sec to not re-create the same chat
+        } else {
+            go();
+        }
+    }
 }
 
 //Helper functions
