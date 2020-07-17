@@ -16,9 +16,10 @@ async function addStreamtoPeerConnection(pc) {
     console.log(userMediaStream)
     localAudio[0].srcObject = userMediaStream;
     localAudio[0].onloadedmetadata = function() {
-        localAudio[0].mute = true;
-        localAudio[0].play()
+        localAudio[0].muted = true;
+        localAudio[0].play();
     }
+    localAudio.attr("disabled",true);
 }
 
 function onCallMessage(pub, call) {
