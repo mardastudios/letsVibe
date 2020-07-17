@@ -6,8 +6,7 @@
     "eslint": "^7.4.0",
     "http-server": "^0.12.3"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "start": "echo 'VIBE: http://localhost:8080'; http-server src"
   },

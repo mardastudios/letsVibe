@@ -1,7 +1,7 @@
 import session from './session.js';
 import {gun} from './main.js';
 import helpers from './helpers.js';
-
+import vibe from './vibe.js';
 
 var friends = window.friends = {};
 
@@ -19,6 +19,8 @@ function newFriend(pub, friendLink) {
 function addFriend(channel) {
     var pub = channel.getId();
     var element = $('<div> </div>');
+    var callButton = $('<button class="callButton" >Call</button>');
+
     if (friends[pub]) {return;}
     friends[pub] = channel;
     element.attr('user-pub',pub);
@@ -27,8 +29,10 @@ function addFriend(channel) {
         element.text(friends[pub].username);
         console.log(friends[pub].username);
     });
-    $('.user-list').append(element).append('<button class="call">Call</button>');
-    console.log(friends[pub]);
+    callButton.click(() => vibe.callUser(friends[pub].participants));
+    $('.user-list').append(element).append(callButton);
+    friends[pub].onTheir('call', call => vibe.onCallMessage(pub, call));
+
 }
 
 //Listen for paste function and create channel
@@ -49,7 +53,8 @@ function onPasteFriendLink(event) {
 function init() {
     $("#paste-friend-link").on('input', onPasteFriendLink);
     
+
 }
 
-export {init, addFriend, newFriend}
-export default {init, addFriend, newFriend}
+export {init, addFriend, newFriend, friends}
+export default {init, addFriend, newFriend, friends}
