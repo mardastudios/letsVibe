@@ -12,8 +12,11 @@ async function addStreamtoPeerConnection(pc) {
     userMediaStream.getTracks().forEach(track => {
         pc.addTrack(track, userMediaStream);
     });
+    console.log(localAudio[0])
+    console.log(userMediaStream)
     localAudio[0].srcObject = userMediaStream;
     localAudio[0].onloadedmetadata = function() {
+        localAudio[0].mute = true;
         localAudio[0].play()
     }
 }
@@ -59,23 +62,22 @@ async function initConnection(createOffer, pub) {
         await createOfferFn();
     }
     friends[pub].onTheir('sdp', async sdp => {
-        if (!friends[pub].pc) { return; }
-        if (friends[pub].pc.signalingState === 'stable') { return; }
-        if (sdp.data && sdp.time && new Date(sdp.time) < (new Date() - 5000)) { return; }
         
-        friends[pub].pc.setRemoteDescription(new RTCSessionDescription(sdp));
-        console.log('got their sdp', sdp);
+        friends[pub].pc.setRemoteDescription(new RTCSessionDescription(sdp.data));
+        console.log('got their sdp', sdp.data);
       });
       friends[pub].onTheir('icecandidates', c => {
-        if (!friends[pub].pc || friends[pub].pc.signalingState === 'closed') { return; }
-        if (c.data && c.time && new Date(c.time) < (new Date() - 5000)) { return; }
         console.log('got their icecandidates', c);
         Object.keys(c.data).forEach(k => {
           if (theirIceCandidateKeys.indexOf(k) === -1) {
             theirIceCandidateKeys.push(k);
+            console.log(c.data[k])
             friends[pub].pc.addIceCandidate(new RTCIceCandidate(c.data[k]));
+
           }
+
         });
+
       });
       friends[pub].pc.onicecandidate = friends[pub].pc.onicecandidate || (({candidate}) => {
         if (!candidate) return;
@@ -98,7 +100,7 @@ async function initConnection(createOffer, pub) {
         switch (friends[pub].pc.signalingState) {
           case "have-remote-offer":
             var answer = await friends[pub].pc.createAnswer({
-              offerToReceiveAudio: 1,
+              offerToReceiveAudio: 1
             });
             friends[pub].pc.setLocalDescription(answer);
             friends[pub].put('sdp', {time: new Date().toISOString(), data: answer});
