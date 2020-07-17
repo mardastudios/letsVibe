@@ -10,8 +10,5 @@
   "scripts": {
     "start": "echo 'VIBE: http://localhost:8080'; http-server src"
   },
-  "keywords": [],
-  "engines": {
-    "node": "10.19.2"
-  }
+  "keywords": []
 }
