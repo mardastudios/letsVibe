@@ -12,10 +12,9 @@ async function addStreamtoPeerConnection(pc) {
     userMediaStream.getTracks().forEach(track => {
         pc.addTrack(track, userMediaStream);
     });
-    console.log(localAudio[0])
-    console.log(userMediaStream)
     localAudio[0].srcObject = userMediaStream;
     localAudio[0].onloadedmetadata = function() {
+        console.log(">>>>LOCAL AUDIO HERE<<<<<")
         localAudio[0].muted = true;
         localAudio[0].play();
     }
@@ -42,6 +41,45 @@ async function callUser(pub) {
     });
     call();
 }
+
+function createResonanceScence(audioElement) {
+  var audioContext = new AudioContext();
+  var resonanceAudioScene = new ResonanceAudio(audioContext);
+
+  resonanceAudioScene.output.connect(audioContext.destination);
+
+  var roomDimensions = {
+    width: 3.1,
+    height: 2.5,
+    depth: 3.4,
+  };
+
+  var roomMaterials = {
+    // Room wall materials
+    left: 'brick-bare',
+    right: 'curtain-heavy',
+    front: 'marble',
+    back: 'glass-thin',
+    // Room floor
+    down: 'grass',
+    // Room ceiling
+    up: 'transparent',
+  };
+  console.log("Room Properties set")
+  resonanceAudioScene.setRoomProperties(roomDimensions, roomMaterials);
+
+  var audioElementSource = audioContext.createMediaElementSource(audioElement);
+
+  var source = resonanceAudioScene.createSource();
+  audioElementSource.connect(source.input);
+
+  //Position scene binaurally
+  source.setPosition(-2, 0, 0);
+  console.log("Position Set to x:-2, y: 0, z: 0")
+  audioElement.play();
+  console.log("audio is playing");
+}
+
 
 async function initConnection(createOffer, pub) {
     ourIceCandidates = {};
@@ -138,7 +176,7 @@ async function initConnection(createOffer, pub) {
           remoteAudio[0].srcObject = event.streams[0];
           remoteAudio[0].onloadedmetadata = function() {
             console.log('metadata loaded');
-            remoteAudio[0].play();
+            createResonanceScence(remoteAudio[0]);
           };
           console.log('received remote stream', event);
         }
