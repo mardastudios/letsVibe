@@ -43,18 +43,18 @@ async function callUser(pub) {
 }
 
 function createResonanceScence(audioElement) {
-  var audioContext = new AudioContext();
-  var resonanceAudioScene = new ResonanceAudio(audioContext);
+  let audioContext = new AudioContext();
+  let resonanceAudioScene = new ResonanceAudio(audioContext);
 
   resonanceAudioScene.output.connect(audioContext.destination);
 
-  var roomDimensions = {
+  let roomDimensions = {
     width: 3.1,
     height: 2.5,
     depth: 3.4,
   };
 
-  var roomMaterials = {
+  let roomMaterials = {
     // Room wall materials
     left: 'brick-bare',
     right: 'curtain-heavy',
@@ -68,14 +68,17 @@ function createResonanceScence(audioElement) {
   console.log("Room Properties set")
   resonanceAudioScene.setRoomProperties(roomDimensions, roomMaterials);
 
-  var audioElementSource = audioContext.createMediaElementSource(audioElement);
+  let audioElementSource = audioContext.createMediaElementSource(audioElement);
 
-  var source = resonanceAudioScene.createSource();
+  let source = resonanceAudioScene.createSource();
   audioElementSource.connect(source.input);
 
   //Position scene binaurally
-  source.setPosition(-2, 0, 0);
-  console.log("Position Set to x:-2, y: 0, z: 0")
+  source.setPosition(-3, 0, 0);
+  source.setMaxDistance(4);
+
+  //Ear position
+  resonanceAudioScene.setListenerPosition(0, 0, 0);
   audioElement.play();
   console.log("audio is playing");
 }
@@ -173,10 +176,12 @@ async function initConnection(createOffer, pub) {
       friends[pub].pc.ontrack = (event) => {
         console.log('ontrack', event);
         if (remoteAudio[0].srcObject !== event.streams[0]) {
+          //createResonanceScence(event.streams[0]);
           remoteAudio[0].srcObject = event.streams[0];
           remoteAudio[0].onloadedmetadata = function() {
-            console.log('metadata loaded');
+            remoteAudio[0].muted = true;
             createResonanceScence(remoteAudio[0]);
+            console.log('metadata loaded');
           };
           console.log('received remote stream', event);
         }
