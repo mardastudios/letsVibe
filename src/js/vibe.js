@@ -43,7 +43,7 @@ async function callUser(pub) {
 }
 
 function createResonanceScence(audioElement) {
-  let audioContext = new AudioContext();
+  let audioContext = new AudioContext() || webkitAudioContext();
   let resonanceAudioScene = new ResonanceAudio(audioContext);
 
   resonanceAudioScene.output.connect(audioContext.destination);
@@ -68,7 +68,7 @@ function createResonanceScence(audioElement) {
   console.log("Room Properties set")
   resonanceAudioScene.setRoomProperties(roomDimensions, roomMaterials);
 
-  let audioElementSource = audioContext.createMediaElementSource(audioElement);
+  let audioElementSource = audioContext.createMediaStreamSource(audioElement);
 
   let source = resonanceAudioScene.createSource();
   audioElementSource.connect(source.input);
@@ -79,7 +79,7 @@ function createResonanceScence(audioElement) {
 
   //Ear position
   resonanceAudioScene.setListenerPosition(0, 0, 0);
-  audioElement.play();
+
   console.log("audio is playing");
 }
 
@@ -177,10 +177,11 @@ async function initConnection(createOffer, pub) {
         console.log('ontrack', event);
         if (remoteAudio[0].srcObject !== event.streams[0]) {
           //createResonanceScence(event.streams[0]);
+          remoteAudio[0].muted = true;
+          createResonanceScence(event.streams[0]);
           remoteAudio[0].srcObject = event.streams[0];
           remoteAudio[0].onloadedmetadata = function() {
-            remoteAudio[0].muted = true;
-            createResonanceScence(remoteAudio[0]);
+            remoteAudio[0].play();
             console.log('metadata loaded');
           };
           console.log('received remote stream', event);
