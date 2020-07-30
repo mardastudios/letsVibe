@@ -2,14 +2,16 @@ import {gun} from './main.js';
 import helpers from './helpers.js';
 import {addFriend, newFriend } from './friend.js';
 
-var key;
-var username;
-var latestChatLink;
+let key;
+let username;
+let latestChatLink;
+let onlineTimeout
+let onlineStatus;
 
 //Create new account
-function newAccount() {
+function createAccount() {
     $('#username').focus();
-    $('#account-create').submit(function(e) {
+    $('#user-signup-form').submit(function(e) {
         e.preventDefault();
         var username = $('#username').val();
         if (username.length) {
@@ -19,9 +21,29 @@ function newAccount() {
                 createFriendLink();
             });
         }
-    });    
+    });
 }
 
+function setOurOnlineStatus() {
+    iris.Channel.setOnline(gun, onlineStatus = true);
+    document.addEventListener("mousemove", () => {
+      iris.Channel.setOnline(gun, onlineStatus = true);
+      clearTimeout(onlineTimeout);
+      onlineTimeout = setTimeout(() => iris.Channel.setOnline(gun, onlineStatus = false), 60000);
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === 'visible') {
+        iris.Channel.setOnline(gun, onlineStatus = true);
+        if (activeChat) {
+          chats[activeChat].setMyMsgsLastSeenTime();
+          Notifications.changeChatUnseenCount(activeChat, 0);
+        }
+      } else {
+        iris.Channel.setOnline(gun, onlineStatus = false);
+      }
+    });
+  }
+  
 //Creating channel URL to be shared
 async function createFriendLink() {
     latestChatLink = await iris.Channel.createChatLink(gun, key, 'http://localhost:8080');
@@ -35,10 +57,11 @@ function login(k) {
     iris.Channel.initUser(gun, key);
     gun.user().get('profile').get('username').on(async name => {        
         username = await name;
-        $('.thisUser').text(username);
+        $('#my-username').text(username);
         
     });
-    
+    $('#vibe-page').show().siblings('div#init-page').hide();
+    setOurOnlineStatus();
     iris.Channel.getChannels(gun, key, addFriend);
     var chatId = helpers.getUrlParameter('chatWith') || helpers.getUrlParameter('channelId');
     var inviter = helpers.getUrlParameter('inviter');
@@ -46,7 +69,7 @@ function login(k) {
         if (inviter !== key.pub) {
             newFriend(chatId, window.location.href);
         }
-        window.history.pushState({}, "Friend", "/"+window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]); // remove param
+        window.history.pushState({}, "VIBE", "/"+window.location.href.substring(window.location.href.lastIndexOf('/') + 1).split("?")[0]); // remove param
     }
     if (chatId) {
         if (inviter) {
@@ -71,11 +94,47 @@ function init() {
 
     } else {
         console.log("NO ACCOUNT ACTIVE\n CREATE ONE");
-        newAccount();
+        createAccount();
     }
 
+    $('#goto-signin').on('click', function(){
+        $('#sign-in').show().siblings('div#sign-up').hide();
+    });
+
+    $('#back-btn').on('click', function(){
+        $('#sign-up').show().siblings('div#sign-in').hide();
+    });
+
+    $('#add-friend').on('click', function() {
+        $('#add-friend-snippet1').show().siblings('div#add-friend-snippet0').hide();
+    });
+
+    $('#close_friend_add').on('click', function() {
+        $('#add-friend-snippet0').show().siblings('div#add-friend-snippet1').hide();
+    });
+
+    $('#my-user-profile').on('click', function() {
+        $('#settings-page').show().siblings('div#vibe-page').hide();
+    });
+
+    $('#go-back-vibe').on('click', function() {
+        $('#vibe-page').show().siblings('div#settings-page').hide();
+    });
+
+    $('.profile-settings-btn').on('click', function() {
+        $('#profile-settings').show().siblings('div#network-settings, div#audio-settings').hide();
+    });
     
-    $('#account-login input').on('input', (event) => {
+    $('.network-settings-btn').on('click', function() {
+        $('#network-settings').show().siblings('div#profile-settings, div#audio-settings').hide();
+    });
+    
+    $('.audio-settings-btn').on('click', function() {
+        $('#audio-settings').show().siblings('div#network-settings, div#profile-settings').hide();
+    });
+    
+
+    $('#priv-key').on('input', (event) => {
         var val = $(event.target).val();
         if (!val.length) {return;}
         try {
@@ -89,17 +148,21 @@ function init() {
             console.log('Error Logging in');
         }
     });
-    $('#account-logout').click(() => {
+    $('#log-out-btn').click(() => {
         console.log(getUsername(), ": LOGGED OUT!")
         localStorage.removeItem('keyPair');
         location.reload();
     });
     
-    $('#debug-print').click(() => {
+    $('#my-user-profile').click(() => {
         console.log("Username: ", getUsername());
         console.log("Key: ", JSON.stringify(getKey()));
         console.log("Friend Link: ", getFriendLink());
     });
+
+    $('#my-link').click(() => {
+        helpers.copyToClipboard(getFriendLink());
+    })
 }
 
 export default {init, getKey, getUsername, getFriendLink};

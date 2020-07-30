@@ -3,10 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/material_icon.css">
     <title>Vibe</title>
 </head>
 <body>
-    <form id="account-create">
+
+
+    <div class="container">
+        <!--Initial Page account sign in and sign up-->
+        
+        <div id="init-page" class="row">
+
+            <!--Sign up page-->
+            <div id="sign-up" class="col-6"">
+                <div class="card py-5 my-5 mx-4"">
+                    <div class="card-body my-5" align="center">
+                        <form id="user-signup-form">
+                            <h3 style="color: #f2f2f2; font-family: Sarina;">Sign Up</h3>
+                            <div class="input-group my-4" style="width: 60%;">
+                                <i class="material-icons" area-hidden="true" style="color: #888;">person_outline</i>
+                                <input type="text" id="username" placeholder=" Username">
+                            </div>
+                            <button id="sign-up-btn" type="btn"><i class="material-icons" aria-hidden="true">arrow_forward</i> Sign Up</button>
+
+                            <div id="goto-signin" class="my-4 "><a href="#">Already have an account?</a></div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!--Sign in page-->
+            <div id="sign-in" class="col-6" style="display: none">
+                <div class="card py-5 my-5 mx-4"">
+                    <div class="card-body my-5" align="center">
+                        <h3 style="color: #f2f2f2; font-family: Sarina;">Sign In</h3>
+                        <div class="input-group my-4" style="width: 60%;">
+                            <i class="material-icons" area-hidden="true" style="color: #888;">fingerprint</i>
+                            <input id="priv-key" type="text" placeholder=" Paste your key here...">
+                        </div>
+                        <p align="center">There is no central server to regulate password 
+                            reset efficiently, that is why we used this model for signing 
+                            in users. Thank you!
+                        </p>
+                        <button id="back-btn" type="btn"><i class="material-icons" aria-hidden="true">arrow_back</i> Back</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!--Infographic page for users-->
+            <div class="col-6 my-5" align="center">
+                <img src="./images/vibe.svg" alt="">
+                <h4>letsVibe</h4>
+                <p align="left">is a decentralized peer to peer video playback syncing
+                    platform from your favourite moview streaming platform "Netflix".
+                    Enjoy virtual home cinema with 3d audio in your browser.
+                </p>
+                <button id="debug-print" type="btn"><i class="material-icons" aria-hidden="true">lightbulb</i> More Info?</button>
+            </div>
+        </div>
+   
+
+        <!--Vibe Page with main interface and nav to settings,-->
+        
+        <div id="vibe-page" class="row" style="height: 100%; display: none;"> 
+
+            <!--Friends page-->           
+            <div id="friends" class="col-6 my-5" >
+
+                <!--Top panel with title and user profile-->
+                <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+                    <h5 style=" margin-left: 2.5rem; color:#f2f2f2; font-family: Sarina;">letsVibe</h5>
+                        <div id="my-user-profile" style="display: flex;justify-content: flex-end;align-items: center; ">
+                            <p id="my-username" style="margin: 1.5rem; padding-left: 2.5rem; font-family: Sansation-Bold;"></p>
+                            <img class="profile-avatar" src="./images/avatar.png" alt="profile-avatar" style="width: 20%; height: auto; border:none;">
+                        </div>
+               </div>
+
+               <!--Friends list-->
+                <div class="card mx-4 my-4" style="height: 24rem;">
+                    <div id="friend-list" class="card-body" align="center">                        
+                    </div>
+                </div>
+
+                <!--Add Frind snippet-->
+                <div id="add-friend-snippet0">
+                    <button id="add-friend" class="mx-4" type="btn"><i class="material-icons" aria-hidden="true">add</i> Add Friend</button>
+                </div>
+                <div id="add-friend-snippet1" style="display: none;">
+                    <div class="input-group mt-4 mx-4 mb-2" style="width: 60%;">
+                        <i class="material-icons" area-hidden="true" style="color: #888;">content_paste</i>
+                        <input id="friend-url" type="text" placeholder=" Paste their user link...">
+                    </div>
+                    <div class="row" style="margin-left: 0px;padding-left: 0px;">
+                        <button class="mx-4" id="my-link" type="btn"><i class="material-icons" aria-hidden="true">content_copy</i> Copy your link</button>
+                        <a id="close_friend_add" href="#" style="margin-top: auto;"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">close</i></a>
+                    </div>
+                </div> 
+            </div>
+
+            <!--Movie Info side-->
+            <div id="info-side" class="col-6"">
+                <div class="card pt-5 my-5 mx-5 pb-3">
+                    <div class="card-body" align="center">
+                        <h3 style="color: #f2f2f2; font-family: Sansation-Bold;">13 Reasons Why S12 E5</h3>
+                        <div class="film-poster my-4" style="width: 60%;">
+                            <img class="poster" src="./images/poster.jpg" alt="13 Reasons Why" style="width: 70%; height: auto;">
+                        </div>
+                        <audio class="localAudio"></audio>
+                        <audio class="remoteAudio"></audio>
+                        <div class="callee mx-3">
+                            
+                        </div>
+                        <div id="vibe-action" style="display: flex; justify-content: space-evenly;">
+                            <button id="start-vibe" type="btn" disabled><i class="material-icons" aria-hidden="true">play_arrow</i> Start Vibe</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Navigation for settings-->
+        <div id="settings-page" class="row" style="display: none;">
+            <div id="settings" class="col-6">
+                <div class="card my-5 mx-4" style="height: 34rem;">
+                    <div class="card-body my-3" align="center">
+
+                        <!--Profile sinppet btn-->
+                        <div class='profile-settings-btn'>
+                            <div class='row' style='width: auto; height: auto; '>
+                                <i class='material-icons my-2 mx-2' aria-hidden='true' style='color: #f2f2f2;'>person</i>
+                                <h5 class="my-2" style=" margin-left: 0.5rem; color:#f2f2f2; font-family: Sansation-Bold;">Profile Settings</h5>
+                            </div>
+                        </div>
+
+                        <!--Audio sinppet btn-->
+                        <div class='audio-settings-btn'>
+                            <div class='row' style='width: auto; height: auto; '>
+                                <i class='material-icons my-2 mx-2' aria-hidden='true' style='color: #f2f2f2;'>music_note</i>
+                                <h5 class="my-2" style=" margin-left: 0.5rem; color:#f2f2f2; font-family: Sansation-Bold;">Audio Settings</h5>
+                            </div>
+                        </div>
+                        
+                        <!--Network sinppet btn-->
+                        <div class='network-settings-btn'>
+                            <div class='row' style='width: auto; height: auto; '>
+                                <i class='material-icons my-2 mx-2' aria-hidden='true' style='color: #f2f2f2;'>signal_cellular_alt</i>
+                                <h5 class="my-2" style=" margin-left: 0.5rem; color:#f2f2f2; font-family: Sansation-Bold;">Network Settings</h5>
+                            </div>
+                        </div>
+
+                        <!--Logout and back btn-->
+                        <div style="margin-top: 14rem;" id="log-out">
+                            <button id="log-out-btn" class="mx-4" type="btn"><i class="material-icons" aria-hidden="true">exit_to_app</i>  Sign Out</button>
+                            <button id="go-back-vibe" class="mx-4" type="btn"><i class="material-icons" aria-hidden="true">arrow_back</i>  Back</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <!--Profile Settings Side-->
+            <div id="profile-settings" class="col-6 my-5" style="height: 35rem;" align="center">
+                <h5 class="mr-5" align="right">
+                    profileSettings
+                </h5>
+                <hr>
+                <div class="my-3">
+                    <img align="center" class="profile-avatar" src="./images/avatar.png" alt="profile-avatar" style="width: 20%; height: auto; border:none;">
+                </div>
+
+                <button id="edit-avatar" class="" type="btn"><i class="material-icons" aria-hidden="true">create</i>  Edit Avatar</button>
+                <div id="edit-username" class="row px-4" align="center">
+                    <div class="input-group mt-4 mx-4 mb-2" style="width: 60%;">
+                        <i class="material-icons" area-hidden="true" style="color: #888;">person_outline</i>
+                        <input id="friend-url" type="text" placeholder="Pino">
+                    </div>
+                    <button id="save-username" class="mt-3" type="btn"><i class="material-icons" aria-hidden="true">done</i></button>
+                </div>
+                <hr>
+                <h6>Private Key</h6>
+                <p>This is used for logging in and will have more info here..</p>
+                <div class="ml-4 my-3" align="center">
+                    <button id="copy-my-key" class="mx-2" type="btn"><i class="material-icons" aria-hidden="true">content_copy</i>  Copy Key</button>
+                    <button id="download-my-key" class="mx-2" type="btn"><i class="material-icons" aria-hidden="true">get_app</i>  Download</button>
+                </div>
+                <hr>
+                <h6>Online Address</h6>
+                <div>
+                    <p style="text-align: left; width: 24rem; margin-top;margin-right: 2rem;margin-left: 2rem;margin-top: auto; text-overflow: ellipsis;">http://localhost:8080?chatWith=W7c8c2kaB40hN97Q_5f4VknCz73qfOj3dHWTEfvVrQY.UoN7mIzzh8H7CqeRvjRxbh5wu6R6OBnXtQDKwIeHAbs</p>
+                </div>
+                
+                <p></p>
+
+                <hr>
+                <h6>Disclaimer</h6>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae culpa, reiciendis, iure ipsam eveniet, molestiae natus quaerat repellat error repudiandae officiis neque atque tempora magni perspiciatis cum mollitia velit maxime.</p>
+            </div>
+            
+
+            <!--Network Settings Side-->
+            <div id="network-settings" class="col-6 my-5" align="center" style="display: none; height: 35rem;">
+                <h5 class="mr-5" align="right">
+                    networkSettings
+                </h5>
+                <hr>
+                <h6>Peers</h6>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <div id="edit-username" class="row px-4" align="center">
+                    <div align="center" class="input-group mt-4 ml-5 mr-4 mb-2" style="width: 60%;">
+                        <i class="material-icons" area-hidden="true" style="color: #888;">people_alt</i>
+                        <input id="friend-url" type="text" placeholder=" Add Peer URL here...">
+                    </div>
+                    <button id="save-username" class="mt-3" type="btn"><i class="material-icons" aria-hidden="true">add</i></button>
+                </div>
+                <hr>
+                <div id="peer-list">
+                    <div class="row">
+                        <p style="text-align: left; width: 24rem; margin-top;margin-right: 2rem;margin-left: 2rem;margin-top: auto; text-overflow: ellipsis;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Error in atque numquam quia fugit veritatis? Delectus aliquam tempora animi reprehenderit iure quas nesciunt magnam iusto similique harum. Obcaecati, doloribus dignissimos.</p>
+                        <i type="btn" class="material-icons" aria-hidden="true" style="color: #f2f2f2;">close</i>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--Audio Settings Side-->
+            <div id="audio-settings" class="col-6 my-5" align="center" style="display: none; height: 35rem;">
+                <h5 class="mr-5" align="right">
+                    audioSettings
+                </h5>
+                <hr>
+                <!--My Room-->
+                <h6>My Room Position</h6>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur libero temporibus dolor tempora quaerat quo. Aperiam autem itaque quasi, voluptatibus libero voluptatem dolorem, doloremque laborum ipsa quidem provident commodi cupiditate.</p>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(x)</h6>
+                    <div class="col-9">
+                        <div id="my-xpos-value">
+                        </div> 
+                        <input class="my-xcon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(y)</h6>
+                    <div class="col-9">
+                        <div id="my-ypos-value">
+                        </div> 
+                        <input class="my-ycon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(z)</h6>
+                    <div class="col-9">
+                        <div id="my-zpos-value">
+                        </div> 
+                        <input class="my-zcon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <!--DEPRECIATED-->
+                
+                <!-- <div class="audio-position-control">
+                    <div id="my-room-pos" class="control-cursor"></div>
+                </div>
+                <p id="room-position"></p>
+                <hr> -->
+
+                <!--My Friend's-->
+                <h6>My Friend's Position</h6>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero reiciendis consectetur maiores cupiditate, eum quia tempora voluptas placeat quas nesciunt! Harum accusantium maxime at dicta nostrum reprehenderit eos deserunt? Id!</p>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(x)</h6>
+                    <div class="col-9">
+                        <div id="friend-xpos-value">
+                        </div> 
+                        <input class="friend-xcon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(y)</h6>
+                    <div class="col-9">
+                        <div id="friend-ypos-value">
+                        </div> 
+                        <input class="friend-ycon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(z)</h6>
+                    <div class="col-9">
+                        <div id="friend-zpos-value">
+                        </div> 
+                        <input class="friend-zcon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <hr>
+                
+                <!--Movie-->
+                <h6>My TV Position</h6>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur libero temporibus dolor tempora quaerat quo. Aperiam autem itaque quasi, voluptatibus libero voluptatem dolorem, doloremque laborum ipsa quidem provident commodi cupiditate.</p>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(x)</h6>
+                    <div class="col-9">
+                        <div id="tv-xpos-value">
+                        </div> 
+                        <input class="tv-xcon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(y)</h6>
+                    <div class="col-9">
+                        <div id="tv-ypos-value">
+                        </div> 
+                        <input class="tv-ycon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+                <div class="row mt-4 mb-2 mx-4">
+                    <h6 class="col-3" style="margin-top:2.75rem;">Position(z)</h6>
+                    <div class="col-9">
+                        <div id="tv-zpos-value">
+                        </div> 
+                        <input class="tv-zcon-slider" type="range" min="-10" max="10" value="0">    
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+            
+    </div>
+    <!-- <form id="account-create">
         <input id="username" placeholder="Username">
         <input id="sign_up" type="submit" value="Sign Up">
     </form>
@@ -22,7 +348,7 @@
     <br>
 
     <form id="vibe-link">
-        <input id="paste-friend-link" placeholder="Paste Friend Link">
+        <input id="paste-friend-link" placeholder=" Paste Friend Link">
     </form>
     <h2>Logged in as:</h2>
 
@@ -35,11 +361,11 @@
     <audio class="remoteAudio"></audio>
     <div class="vibe-session"></div>
     <button class="call_answer">Answer</button>
-    <button class="call_reject">Reject</button>
+    <button class="call_reject">Reject</button> -->
 
-    
-    <script src="js/lib/jquery.js"></script>
-
+    <script src="js/jquery-3.5.1.slim.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script src="js/lib/gun.js"></script>
     <script src="js/lib/radix.js"></script>
     <script src="js/lib/radisk.js"></script>

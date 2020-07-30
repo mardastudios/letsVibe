@@ -20,17 +20,72 @@ async function addStreamtoPeerConnection(pc) {
     }
     localAudio.attr("disabled",true);
 }
+function showIncomingCall(pub) {
+  if(!friends[pub].pc) {
+    var answer_reject_btn = $('<button id="answer-vibe" type="btn"><i class="material-icons" aria-hidden="true">call</i> Answer</button><button id="reject-vibe" type="btn"><i class="material-icons" aria-hidden="true">call_end</i> Reject</button>');
+    $('#start-vibe').replaceWith(answer_reject_btn);
+    var answer = $('#answer-vibe');
+    var reject = $('#reject-vibe');
+    answer.click(() => answerCall(pub));
+    reject.click(() => rejectCall(pub));
+  }
+}
+
+function stopUserMedia() {
+  userMediaStream.getTracks().forEach(track => track.stop());
+}
+
 
 function onCallMessage(pub, call) {
   if (call.offer) {
     console.log("incomming call from ", pub, call);
-    $('.call_answer').click(async () => await initConnection(false, pub));
-    $('.call_reject').click(() => friends[pub].put('call', null));
+    showIncomingCall(pub);
   }
 }
 
+function cancelCall(pub) {
+  stopUserMedia(pub);
+  friends[pub].put('call', null);
+  friends[pub].pc && friends[pub].pc.close();
+  friends[pub].pc = null;
+}
+
+function endCall(pub) {
+  friends[pub].pc && friends[pub].pc.close();
+  stopUserMedia(pub);
+  friends[pub].put('call', null);
+  friends[pub].pc = null;
+  resetView();
+}
+
+function closeIncomingCall() {
+  var start_vibe = $('<button id="start-vibe" type="btn" disabled><i class="material-icons" aria-hidden="true">play_arrow</i> Start Vibe</button>')
+  $('#vibe-action').empty();
+  $('#vibe-action').append(start_vibe);
+}
+
+function resetView() {
+  var start_vibe = $('<button id="start-vibe" type="btn" disabled><i class="material-icons" aria-hidden="true">play_arrow</i> Start Vibe</button>');
+  $('.callee').empty();
+  $('#vibe-action').empty();
+  $('#vibe-action').append(start_vibe);
+}
+
+function rejectCall(pub) {
+  console.log("REJECTED");
+  friends[pub].rejectedTime = new Date();
+  closeIncomingCall();
+  friends[pub].put('call', null);
+}
+async function answerCall(pub) {
+  var end_vibe = $('<button id="end-vibe" type="btn"><i class="material-icons" aria-hidden="true">call_end</i> End Vibe</button>')
+  $('#vibe-action').empty();
+  $('#vibe-action').append(end_vibe);
+  $('#end-vibe').click(() => endCall(pub));
+  await initConnection(false, pub);
+}
 async function callUser(pub) {
-    
+    var end_vibe = $('<button id="end-vibe" type="btn"><i class="material-icons" aria-hidden="true">call_end</i> End Vibe</button>')
     await initConnection(true, pub);
     console.log('Calling', pub);
 
@@ -40,6 +95,9 @@ async function callUser(pub) {
         offer: true,
     });
     call();
+    $('#vibe-action').empty();
+    $('#vibe-action').append(end_vibe);
+    $('#end-vibe').click(() => endCall(pub));
 }
 
 function createResonanceScence(audioElement) {
