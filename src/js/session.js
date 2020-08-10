@@ -1,9 +1,11 @@
 import {gun} from './main.js';
 import helpers from './helpers.js';
 import {addFriend, newFriend } from './friend.js';
+import {getRandomAvatar, generateAvatarURL} from './avatar.js';
 
 let key;
 let username;
+var avatar;
 let latestChatLink;
 let onlineTimeout
 let onlineStatus;
@@ -14,10 +16,13 @@ function createAccount() {
     $('#user-signup-form').submit(function(e) {
         e.preventDefault();
         var username = $('#username').val();
+        var avatar = getRandomAvatar();
         if (username.length) {
             Gun.SEA.pair().then(async k => {
                 await login(k);
                 gun.user().get('profile').get('username').put(username);
+                gun.user().get('profile').get('avatar').put(avatar);
+                console.log(avatar);
                 createFriendLink();
             });
         }
@@ -31,17 +36,6 @@ function setOurOnlineStatus() {
       clearTimeout(onlineTimeout);
       onlineTimeout = setTimeout(() => iris.Channel.setOnline(gun, onlineStatus = false), 60000);
     });
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === 'visible') {
-        iris.Channel.setOnline(gun, onlineStatus = true);
-        if (activeChat) {
-          chats[activeChat].setMyMsgsLastSeenTime();
-          Notifications.changeChatUnseenCount(activeChat, 0);
-        }
-      } else {
-        iris.Channel.setOnline(gun, onlineStatus = false);
-      }
-    });
   }
   
 //Creating channel URL to be shared
@@ -49,17 +43,23 @@ async function createFriendLink() {
     latestChatLink = await iris.Channel.createChatLink(gun, key, 'http://localhost:8080');
 }
 
-
 //Login using a key
 function login(k) {
     key = k;
     localStorage.setItem('keyPair', JSON.stringify(k));
-    iris.Channel.initUser(gun, key);
+    iris.Channel.initUser        var name = $(e.target).attr('name');(gun, key);
     gun.user().get('profile').get('username').on(async name => {        
         username = await name;
         $('#my-username').text(username);
+        $('#my-edit-username').text(username);
         
     });
+    gun.user().get('profile').get('avatar').on(async avatar => {
+        avatar = await avatar;
+        $('#my-user-profile').find('.profile-avatar').attr('src', generateAvatarURL(avatar));
+        $('#my-edit-profile').find('.profile-avatar').attr('src', generateAvatarURL(avatar));
+        $('#profile-settings-avatar').find('.profile-avatar').attr('src', generateAvatarURL(avatar));
+    })
     $('#vibe-page').show().siblings('div#init-page').hide();
     setOurOnlineStatus();
     iris.Channel.getChannels(gun, key, addFriend);
@@ -84,7 +84,13 @@ function login(k) {
 function getKey() { return key;}
 function getUsername() {return username;}
 function getFriendLink() {return latestChatLink || helpers.getUserFriendLink(key.pub);}
+function getAvatar() { return avatar;}
 
+function switchPage(swBtn,startPg , endPg) {
+    $(`#${swBtn}`).on('click', function() {
+        $(`#${endPg}`).show().siblings(`div#${startPg}`);
+    })
+}
 
 function init() {
     var localStorageKey = localStorage.getItem('keyPair');
@@ -100,7 +106,7 @@ function init() {
     $('#goto-signin').on('click', function(){
         $('#sign-in').show().siblings('div#sign-up').hide();
     });
-
+    //switchPage('goto-signin','sign-up', 'sign-in');
     $('#back-btn').on('click', function(){
         $('#sign-up').show().siblings('div#sign-in').hide();
     });
@@ -133,6 +139,13 @@ function init() {
         $('#audio-settings').show().siblings('div#network-settings, div#profile-settings').hide();
     });
     
+    $('#edit-avatar').on('click', function(){
+        $('#edit-page').show().siblings('div#settings-page').hide();
+    });
+
+    $('#discard-all').on('click', function(){
+        $('#settings-page').show().siblings('div#edit-page').hide();
+    });
 
     $('#priv-key').on('input', (event) => {
         var val = $(event.target).val();
@@ -165,4 +178,4 @@ function init() {
     })
 }
 
-export default {init, getKey, getUsername, getFriendLink};
+export default {init, getKey, getUsername, getFriendLink, getAvatar};

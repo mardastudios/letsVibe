@@ -2,6 +2,8 @@ import session from './session.js';
 import {gun} from './main.js';
 import helpers from './helpers.js';
 import vibe from './vibe.js';
+import {generateAvatarURL} from './avatar.js';
+
 
 var friends = window.friends = {};
 
@@ -18,9 +20,9 @@ function newFriend(pub, friendLink) {
 //Add the channel to friends[pub]
 function addFriend(channel) {
     var pub = channel.getId();
-    var element = $("<div class='user'><div class='row' style='width: auto; height: auto;'><img class='profile-avatar' src='./images/avatar-2.png' alt='profile-avatar' style='width: auto; height: 75px; border:none;'><div class='row' style='width: 30%; height:auto;margin-left: 12px;'><div class='row' align='left'><p id='friend-username' style='color: #f2f2f2; font-family: Sansation-Bold; margin: 1.5rem; padding-left: 0.3rem;'></p></div><div class='row' align='left' style='margin-left: 12px;margin-right: -50px;margin-top: -24px;'><p>Status:   </p><i id='online-status' class='material-icons mx-2' aria-hidden='true'></i><p id='online-tag'></p></div></div></div></div>");
+    var element = $("<div class='user'><div class='row' style='width: auto; height: auto;'><img class='profile-avatar' alt='profile-avatar' style='width: auto; height: 75px; border:none;'><div class='row' style='width: 30%; height:auto;margin-left: 12px;'><div class='row' align='left'><p id='friend-username' style='color: #f2f2f2; font-family: Sansation-Bold; margin: 1.5rem; padding-left: 0.3rem;'></p></div><div class='row' align='left' style='margin-left: 12px;margin-right: -50px;margin-top: -24px;'><p>Status:   </p><i id='online-status' class='material-icons mx-2' aria-hidden='true'></i><p id='online-tag'></p></div></div></div></div>");
     
-    var callee = $('<div class="row" style="width: auto; height: auto;"><img class="profile-avatar" src="./images/avatar-6.png" alt="profile-avatar" style="width: auto; height: 75px; border:none;"><div class="row" style="width: 35%; height:auto;margin-left: 12px; margin-bottom: 24px;"><div class="row" align="left"><p id="friend-username" style="color: #f2f2f2; font-family: Sansation-Bold; margin: 1.5rem; padding-left: 0.3rem;"></p></div><div class="row" align="left" style="margin-left: 12px; margin-top: -24px;margin-right: -65px;"><a href="#"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;" type="btn">volume_mute</i></a><a href="#"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">volume_down</i></a><a href="#"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">volume_up</i></a><a id="call_session" href=""><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">close</i></a></div></div></div>');
+    var callee = $('<div id="vibe-avatar" class="row" style="width: auto; height: auto;"><img class="profile-avatar" alt="profile-avatar" style="width: auto; height: 75px; border:none;"><div class="row" style="width: 35%; height:auto;margin-left: 12px; margin-bottom: 24px;"><div class="row" align="left"><p id="friend-username" style="color: #f2f2f2; font-family: Sansation-Bold; margin: 1.5rem; padding-left: 0.3rem;"></p></div><div class="row" align="left" style="margin-left: 12px; margin-top: -24px;margin-right: -65px;"><a href="#"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;" type="btn">volume_mute</i></a><a href="#"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">volume_down</i></a><a href="#"><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">volume_up</i></a><a id="call_session" href=""><i class="material-icons mr-3" aria-hidden="true" style="color: #f2f2f2;">close</i></a></div></div></div>');
     var callButton = $('#start-vibe');
     if (friends[pub]) {return;}
     friends[pub] = channel;
@@ -30,6 +32,12 @@ function addFriend(channel) {
         element.find('#friend-username').text(friends[pub].username);
         console.log(friends[pub]);
     });
+
+    gun.user(pub).get('profile').get('avatar').on(async profileAvatar => {
+        friends[pub].avatar = await profileAvatar;
+        element.find('.profile-avatar').attr('src', generateAvatarURL(profileAvatar));
+        console.log(profileAvatar);
+    })
 
     friends[pub].online = {}
 
@@ -64,6 +72,7 @@ function addFriend(channel) {
         var friend_pub = $(this).attr('user-pub');
         if ($('.callee').empty()) {
             callee.find('#friend-username').text(friends[friend_pub].username);
+            callee.find('.profile-avatar').attr('src', generateAvatarURL(friends[friend_pub].avatar));
             $('.callee').append(callee);
             if (friends[pub].online.isOnline) {
                 callButton.prop('disabled', false);
