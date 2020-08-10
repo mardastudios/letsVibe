@@ -47,7 +47,7 @@ async function createFriendLink() {
 function login(k) {
     key = k;
     localStorage.setItem('keyPair', JSON.stringify(k));
-    iris.Channel.initUser        var name = $(e.target).attr('name');(gun, key);
+    iris.Channel.initUser(gun, key);
     gun.user().get('profile').get('username').on(async name => {        
         username = await name;
         $('#my-username').text(username);
