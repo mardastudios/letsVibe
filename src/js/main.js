@@ -1,11 +1,10 @@
-
-import session from './session.js';
-import friend from './friend.js';
-import avatar from './avatar.js';
+import session from "./session.js";
+import friend from "./friend.js";
+import avatar from "./avatar.js";
 
 Gun.log.off = true;
 //Gun instance created here
-var gun = Gun(['https://gun-eu.herokuapp.com/gun', 'https://dletta.rig.airfaas.com/gun']);
+var gun = Gun(["https://gun-us.herokuapp.com/gun"]);
 window.gun = gun;
 
 //DEPRECIATED
@@ -25,12 +24,10 @@ window.gun = gun;
 
 //     console.log(room_control)
 
-
 //     stamp.css('left', (e.clientX + "px"));
 //     stamp.css('top', (e.clientY + "px"));
 
 //     var crdnt = e.clientX + "px" + ", " + e.clientY;
-
 
 //     if ($(this).hasClass('audio-stamp')) {
 //         console.log("IF")
@@ -41,14 +38,14 @@ window.gun = gun;
 //         console.log($(this))
 //         $(this).append(stamp);
 //         console.log($(this))
- 
+
 //         $(this).find('#room-position').text(crdnt);
 //     }
-    
+
 // });
 
 session.init();
 friend.init();
 avatar.init();
 
-export {gun};
+export { gun };
