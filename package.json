@@ -3,16 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "@mdi/font": "^5.3.45",
-    "bootstrap": "^4.5.0",
-    "eslint": "^7.4.0",
-    "http-server": "^0.12.3",
-    "jquery": "^1.9.1",
-    "popper.js": "^1.16.1"
+    "gun": "^0.2020.520"
   },
   "devDependencies": {},
   "scripts": {
     "start": "echo 'VIBE: http://localhost:8080'; http-server src"
   },
-  "keywords": []
+  "keywords": [],
+  "type": "module"
 }
