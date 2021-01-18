@@ -1,4 +1,6 @@
-letsVibe
+## letsVibe [DEPRECIATED]
+
+# Currently swiching codebase
 
 is a decentralized peer to peer video playback syncing platform from your favourite moview streaming platform "Netflix". Enjoy virtual home cinema with 3d audio in your browser.
 
